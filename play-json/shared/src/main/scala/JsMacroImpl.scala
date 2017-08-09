@@ -240,33 +240,39 @@ import scala.reflect.macros.blackbox
           case Some((TypeRef(NoPrefix, a, _),
             TypeRef(NoPrefix, b, _))) => { // for generic parameter
             if (a.fullName != b.fullName) {
-              c.info(
-                c.enclosingPosition,
-                s"Type symbols are not compatible: $a != $b",
-                force = false
-              )
+              if (debugEnabled) {
+                c.info(
+                  c.enclosingPosition,
+                  s"Type symbols are not compatible: $a != $b",
+                  force = false
+                )
+              }
 
               false
             } else conforms(types.tail)
           }
 
           case Some((a, b)) if (a.typeArgs.size != b.typeArgs.size) => {
-            c.info(
-              c.enclosingPosition,
-              s"Type parameters are not matching: $a != $b",
-              force = false
-            )
+            if (debugEnabled) {
+              c.info(
+                c.enclosingPosition,
+                s"Type parameters are not matching: $a != $b",
+                force = false
+              )
+            }
 
             false
           }
 
           case Some((a, b)) if a.typeArgs.isEmpty =>
             if (a =:= b) conforms(types.tail) else {
-              c.info(
-                c.enclosingPosition,
-                s"Types are not compatible: $a != $b",
-                force = false
-              )
+              if (debugEnabled) {
+                c.info(
+                  c.enclosingPosition,
+                  s"Types are not compatible: $a != $b",
+                  force = false
+                )
+              }
 
               false
             }
